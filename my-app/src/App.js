@@ -9,26 +9,38 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = () => {
-    if (searchTerm.trim() === "") return;
+  useEffect(() => {
+    handleSearch("avengers");
+  }, []);
+
+  const handleSearch = (term = searchTerm) => {
+    if (typeof term !== "string" || term.trim() === "") return;
 
     setLoading(true);
 
-    fetch(`https://www.omdbapi.com/?s=${searchTerm}&apikey=5328cf5d`)
+    fetch(`https://www.omdbapi.com/?s=${term}&apikey=5328cf5d`)
       .then((res) => res.json())
       .then((data) => {
         if (data.Search) {
           const formattedMovies = data.Search.map((movie) => ({
-            id: movie.imdbID,
+            id: movie.ID,
             title: movie.Title,
-            poster: movie.Poster
+            poster:
+              movie.Poster !== "N/A"
+                ? movie.Poster
+                : "https://via.placeholder.com/300x450?text=No+Image"
           }));
 
           setMovies(formattedMovies);
         } else {
           setMovies([]);
         }
-
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setMovies([]);
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
@@ -37,6 +49,7 @@ function App() {
     const updatedMovies = movies.filter((movie) => movie.id !== id);
     setMovies(updatedMovies);
   };
+
   const handleUpdateMovie = (id, newTitle) => {
     const updatedMovies = movies.map((movie) =>
       movie.id === id ? { ...movie, title: newTitle } : movie
@@ -47,32 +60,57 @@ function App() {
 
   return (
     <div>
-      <h1> My Movie App </h1>
-      <input
-        type="text"
-        placeholder="Search movie..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <button
-        onClick={handleSearch}
-        className={width < 600 ? "btn-mobile" : "btn-desktop"}
-      >
-        {width < 600 ? "🔍" : "Search Movie"}
-      </button>
+      {/* HERO */}
+      <div className="hero">
+        <div className="hero-content">
+          <h1>Unlimited movies, series and more</h1>
+          <p>Search your favorite movies instantly</p>
 
-      {loading ? (
-        <div>
-          <div className="loader"></div>
-          <p>Loading movies...</p>
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search movie..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <button
+              onClick={() => handleSearch()}
+              className={width < 600 ? "btn-mobile" : "btn-desktop"}
+            >
+              {width < 600 ? "🔍" : "Search Movie"}
+            </button>
+          </div>
         </div>
-      ) : (
-        <MovieList
-          movies={movies}
-          onDelete={handleDeleteMovie}
-          onUpdate={handleUpdateMovie}
-        />
-      )}
+      </div>
+
+      {/* CONTENT */}
+      <div className="content">
+        <h2>
+          {searchTerm
+            ? `Results for: "${searchTerm}"`
+            : "Trending Movies"}
+        </h2>
+
+        {loading ? (
+          <div>
+            <div className="loader"></div>
+            <p>Loading movies...</p>
+          </div>
+        ) : (
+          <>
+            {movies.length === 0 ? (
+              <p>No movies found. Try another search 🎬</p>
+            ) : (
+              <MovieList
+                movies={movies}
+                onDelete={handleDeleteMovie}
+                onUpdate={handleUpdateMovie}
+              />
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

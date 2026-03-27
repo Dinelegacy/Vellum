@@ -3,7 +3,6 @@ import MovieItem from "./MovieItem";
 function MovieList({ movies, onDelete, onUpdate }) {
     return (
         <div>
-            <h2>Movie List</h2>
             {movies.length === 0 ? (
                 <p>No movies yet. Add your first movie!</p>
             ) : (

@@ -149,10 +149,46 @@ body {
   margin: 0;
   padding: 20px;
   color: white;
+  background-size: cover;
+  background-position: center;
+}
 
-  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
-    url("https://images.unsplash.com/photo-1524985069026-dd778a71c7b4");
+.hero {
+  height: 60vh;
+  /* Increased slightly for a better "Hero" feel */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  /* This line adds the dark overlay (0,0,0, 0.7 is 70% black) */
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("../src/assets/hero.jpg");
 
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+
+  /* Optional: removes the default body padding from the hero area */
+  margin: -20px -20px 20px -20px;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+}
+
+.hero-content p {
+  margin: 10px 0 20px;
+  color: #ccc;
+}
+
+.search-box {
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  padding: 20px;
 }
