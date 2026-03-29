@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import MovieList from "./components/MovieList";
 import { useWindowWidth } from "./useWindowWidth";
 import "./App.css";
+import MoviePopup from "./components/MoviePopup";
 
 function App() {
   const width = useWindowWidth();
@@ -9,6 +10,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [query, setQuery] = useState("");
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
   useEffect(() => {
     handleSearch("avengers", false);
   }, []);
@@ -22,13 +25,16 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         if (data.Search) {
-          const formattedMovies = data.Search.map((movie) => ({
-            id: movie.imdbID, // Fixed: OMDB uses imdbID
+          // Removes duplicates based on imdbID
+          const uniqueMovies = data.Search.filter(
+            (movie, index, self) =>
+              index === self.findIndex((m) => m.imdbID === movie.imdbID)
+          );
+
+          const formattedMovies = uniqueMovies.map((movie) => ({
+            id: movie.imdbID,
             title: movie.Title,
-            poster:
-              movie.Poster !== "N/A"
-                ? movie.Poster
-                : "https://via.placeholder.com/300x450?text=No+Image"
+            poster: movie.Poster !== "N/A" ? movie.Poster : "https://via.placeholder.com"
           }));
 
           setMovies(formattedMovies);
@@ -61,7 +67,6 @@ function App() {
     <div>
       {/* HERO SECTION */}
       <div className="hero">
-        {/* LOGO ADDED HERE */}
         <nav className="navbar">
           <div className="logo">VELLUM</div>
         </nav>
@@ -80,8 +85,14 @@ function App() {
                 setSearchTerm(value);
 
                 if (value.trim() === "") {
-                  handleSearch("avengers", false); // reset to trending
-                  setQuery(""); // remove "Search Results"
+                  handleSearch("avengers", false);
+                  setQuery("");
+                }
+              }}
+              /* FIX: LISTENS FOR ENTER KEY */
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
                 }
               }}
             />
@@ -115,13 +126,19 @@ function App() {
               <MovieList
                 movies={movies}
                 onDelete={handleDeleteMovie}
-                onUpdate={handleUpdateMovie}
-                onSelect={() => { }} // Add this line to stop the "onSelect is not a function" error
+                onSelect={setSelectedMovie}
               />
             )}
           </>
         )}
       </div>
+
+      <MoviePopup
+        movie={selectedMovie}
+        onClose={() => setSelectedMovie(null)}
+        onDelete={handleDeleteMovie}
+        onUpdate={handleUpdateMovie}
+      />
     </div>
   );
 }

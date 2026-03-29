@@ -1,26 +1,12 @@
 import { useState } from "react";
 
-function MovieItem({ movie, onDelete }) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedTitle, setEditedTitle] = useState(movie.title);
-
+function MovieItem({ movie, onSelect }) {
     return (
-        <li>
+        <li className="movie-card" onClick={() => onSelect(movie)}>
             <img src={movie.poster} alt={movie.title} />
-
-            {isEditing ? (
-                <input
-                    type="text"
-                    value={editedTitle}
-                    onChange={(e) => setEditedTitle(e.target.value)}
-                />
-            ) : (
-                movie.title
-            )}
-
-            <button onClick={() => setIsEditing(true)}>Edit</button>
-
-            <button onClick={() => onDelete(movie.id)}>Delete</button>
+            <div className="movie-info">
+                <h3>{movie.title}</h3>
+            </div>
         </li>
     );
 }

@@ -1,6 +1,6 @@
 import MovieItem from "./MovieItem";
 
-function MovieList({ movies, onDelete, onUpdate }) {
+function MovieList({ movies, onDelete, onSelect }) {
     return (
         <div>
             {movies.length === 0 ? (
@@ -12,7 +12,7 @@ function MovieList({ movies, onDelete, onUpdate }) {
                             key={movie.id}
                             movie={movie}
                             onDelete={onDelete}
-                            onUpdate={onUpdate}
+                            onSelect={onSelect}
                         />
                     ))}
                 </ul>
