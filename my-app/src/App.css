@@ -6,13 +6,11 @@
   padding: 20px 40px;
   display: flex;
   justify-content: flex-start;
-  /* Aligns logo to the left */
   box-sizing: border-box;
 }
 
 .logo {
   color: #e50914;
-  /* Cinematic Red */
   font-size: 2.5rem;
   font-weight: 900;
   letter-spacing: 2px;
@@ -20,10 +18,9 @@
   text-transform: uppercase;
 }
 
-/* --- UPDATED HERO --- */
+/* --- HERO SECTION --- */
 .hero {
   position: relative;
-  /* Needed for the absolute navbar */
   height: 60vh;
   display: flex;
   align-items: center;
@@ -39,27 +36,18 @@
   margin: -20px -20px 20px -20px;
 }
 
-/* --- EXISTING STYLES --- */
-.loader {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #333;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 0;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+.hero-content p {
+  margin: 10px 0 30px;
+  font-size: 1.2rem;
+  color: #ccc;
 }
 
+/* --- GLOBAL STYLES --- */
 body {
   font-family: Arial, sans-serif;
   background-color: #111;
@@ -78,10 +66,10 @@ input {
   font-size: 16px;
 }
 
+/* --- BUTTONS --- */
 .btn-desktop {
   padding: 12px 25px;
   background-color: #e50914;
-  /* Red to match logo */
   color: white;
   border-radius: 5px;
   font-weight: bold;
@@ -99,161 +87,164 @@ input {
   justify-content: center;
 }
 
-.hero-content h1 {
-  font-size: 3rem;
-  margin-bottom: 0;
-}
-
-.hero-content p {
-  margin: 10px 0 30px;
-  font-size: 1.2rem;
-  color: #ccc;
-}
-
+/* --- MOVIE LIST / CARDS --- */
 .content {
   padding: 20px;
 }
 
 ul {
   display: flex !important;
-  /* Side-by-side */
   flex-direction: row !important;
   overflow-x: auto !important;
-  /* Enables horizontal scroll */
-  overflow-y: hidden;
   gap: 20px;
-  /* Spacing between posters */
   padding: 40px 20px;
-  /* Space for the hover grow effect */
   list-style: none;
   margin: 0;
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
-/* 2. Hide the ugly scrollbar */
 ul::-webkit-scrollbar {
   display: none;
 }
 
-/* 3. Set the size of each movie card */
-li {
-  min-width: 200px;
-  /* Prevents them from shrinking to tiny icons */
-  max-width: 200px;
-  flex-shrink: 0;
-  /* Stops them from squishing */
-  transition: transform 0.4s ease;
-  cursor: pointer;
-  text-align: left;
-  /* Makes titles look better than center-aligned */
-}
-
-/* 4. The Netflix "Pop" on hover */
-li:hover {
-  transform: scale(1.15);
-  z-index: 100;
-}
-
-/* 5. Ensure images fill the card correctly */
-li img {
-  width: 100%;
-  height: 300px;
-  /* Consistent height for all posters */
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* 6. Clean up the text/buttons to look more professional */
-.movie-card h3 {
-  font-size: 0.9rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  /* Adds '...' to long titles */
-}
-
-.buttons {
-  opacity: 0;
-  /* Hides buttons until you hover over the movie */
-  transition: opacity 0.3s;
-}
-
-li:hover .buttons {
-  opacity: 1;
-}
-
-content>div {
-  display: flex !important;
-  flex-direction: row !important;
-  overflow-x: auto !important;
-  /* Enables sliding */
-  gap: 20px;
-  padding: 40px 20px;
-  scrollbar-width: none;
-  /* Hide scrollbar Firefox */
-}
-
-.content>div::-webkit-scrollbar {
-  display: none;
-  /* Hide scrollbar Chrome/Safari */
-}
-
-/* 2. The Card */
 .movie-card {
   min-width: 200px !important;
-  /* Force width */
   flex-shrink: 0 !important;
-  /* Prevents the card from squishing to 0px */
   background: #1c1c1c;
   border-radius: 8px;
   padding: 10px;
   text-align: left;
   transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
-/* 3. THE IMAGE FIX - This is likely why they are missing */
-.movie-card img {
-  width: 100% !important;
-  height: 300px !important;
-  /* Forces the image to have a size */
-  object-fit: cover;
-  /* Keeps the poster from looking stretched */
-  border-radius: 5px;
-  display: block;
-  /* Ensures it takes up space */
-  background-color: #333;
-  /* Shows a grey box if image fails to load */
-}
-
-/* 4. The Hover Effect */
 .movie-card:hover {
   transform: scale(1.1);
   z-index: 10;
 }
 
+.movie-card img {
+  width: 100% !important;
+  height: 300px !important;
+  object-fit: cover;
+  border-radius: 5px;
+  display: block;
+  background-color: #333;
+}
+
+.movie-card h3 {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buttons {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.movie-card:hover .buttons {
+  opacity: 1;
+}
+
+/* --- FIXED POPUP (MODAL) --- */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
+  /* Darker backdrop for focus */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
+  background: #181818;
+  padding: 0;
+  /* Important: remove padding for the modern look */
+  border-radius: 12px;
   text-align: center;
-  max-width: 400px;
+  max-width: 350px;
+  /* Reduced to keep the image sharp and not "too big" */
+  width: 90%;
+  position: relative;
+  /* Anchors the X button to the top-right */
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
 }
 
 .modal-content img {
   width: 100%;
-  border-radius: 5px;
+  display: block;
+  /* Removes any gap under image */
+  height: auto;
+}
+
+/* THE MODERN X BUTTON */
+.close-x {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+
+  /* Visible Design */
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+
+  /* Size and Alignment */
+  width: 34px;
+  height: 34px;
+  font-size: 26px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+  padding-bottom: 4px;
+  /* Centers the × symbol */
+}
+
+.close-x:hover {
+  background: #e50914;
+  /* Netflix Red */
+  transform: scale(1.1);
+  border-color: white;
+}
+
+/* Spacing for text and buttons below the image */
+.modal-content h2,
+.modal-buttons {
+  padding: 20px;
+  margin: 0;
+}
+
+/* --- LOADER --- */
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #333;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

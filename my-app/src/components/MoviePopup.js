@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
 function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
-    const [isEditing, setIsEditing] = useState(false); // Track if we are editing
+    const [isEditing, setIsEditing] = useState(false);
     const [newTitle, setNewTitle] = useState("");
 
     useEffect(() => {
         if (movie) {
             setNewTitle(movie.title);
-            setIsEditing(false); // Reset to "view mode" when opening a new movie
+            setIsEditing(false);
         }
     }, [movie]);
 
@@ -16,16 +16,18 @@ function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
     return (
         <div className="modal" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                {/* THE X BUTTON */}
+                <button className="close-x" onClick={onClose}>&times;</button>
+
                 <img src={movie.poster} alt={movie.title} />
 
-                {/* SHOW TITLE OR INPUT BASED ON STATE */}
                 {isEditing ? (
                     <input
                         type="text"
                         value={newTitle}
                         onChange={(e) => setNewTitle(e.target.value)}
                         className="edit-input"
-                        autoFocus // Automatically focus the box when it appears
+                        autoFocus
                     />
                 ) : (
                     <h2>{movie.title}</h2>
@@ -35,7 +37,7 @@ function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
                     {isEditing ? (
                         <button className="btn-save" onClick={() => {
                             onUpdate(movie.id, newTitle);
-                            setIsEditing(false); // Go back to view mode
+                            setIsEditing(false);
                         }}>Save</button>
                     ) : (
                         <button onClick={() => setIsEditing(true)}>Edit</button>
@@ -45,8 +47,6 @@ function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
                         onDelete(movie.id);
                         onClose();
                     }}>Delete</button>
-
-                    <button onClick={onClose}>Close</button>
                 </div>
             </div>
         </div>
