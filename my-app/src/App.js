@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import MovieList from "./components/MovieList/MovieList";
-import MoviePopup from "./components/MovieCard/MoviePopup";
+import MoviePopup from "./components/MoviePopup/MoviePopup";
+import MovieItem from "./components/MovieItem/MovieItem";
 import { useWindowWidth } from "./hooks/useWindowWidth";
 import { searchMovies } from "./services/Api";
 import "./App.css";

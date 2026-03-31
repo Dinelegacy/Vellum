@@ -1,4 +1,4 @@
-import MovieItem from "../MovieCard/MovieItem";
+import MovieItem from "../MovieItem/MovieItem";
 
 function MovieList({ movies, onDelete, onSelect }) {
     return (
