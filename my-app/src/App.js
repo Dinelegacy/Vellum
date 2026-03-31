@@ -11,6 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     performSearch("avengers");
@@ -18,7 +19,10 @@ function App() {
 
   const performSearch = async (term = searchTerm) => {
     const finalTerm = term.trim() || "avengers";
+
     setLoading(true);
+    setHasSearched(finalTerm !== "avengers"); // 👈 KEY LINE
+
     const results = await searchMovies(finalTerm);
     setMovies(results);
     setLoading(false);
@@ -66,7 +70,7 @@ function App() {
       </div>
 
       <div className="content">
-        <h2>{searchTerm ? "Search Results" : "Trending Movies"}</h2>
+        <h2>{hasSearched ? "Search Results" : "Trending Movies"}</h2>
         {loading ? (
           <p>Loading movies...</p>
         ) : movies.length === 0 ? (
