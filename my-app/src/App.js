@@ -45,7 +45,14 @@ function App() {
               type="text"
               placeholder="Search movie..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchTerm(value);
+
+                if (value.trim() === "") {
+                  performSearch("avengers");
+                }
+              }}
               onKeyDown={(e) => e.key === "Enter" && performSearch()}
             />
             <button
