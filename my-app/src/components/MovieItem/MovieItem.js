@@ -14,11 +14,6 @@ function MovieItem({ movie, onSelect, onDelete }) {
 
             <div className="movie-info">
                 <h3>{movie.title}</h3>
-                <div className="buttons">
-                    <button className="btn-card-delete" onClick={handleDelete}>
-                        Remove
-                    </button>
-                </div>
             </div>
         </li>
     );

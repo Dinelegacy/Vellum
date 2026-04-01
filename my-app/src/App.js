@@ -8,6 +8,7 @@ import { useWindowWidth } from "./hooks/useWindowWidth";
 import { searchMovies } from "./services/Api";
 import "./App.css";
 import "./index.css"
+
 function App() {
   const width = useWindowWidth();
   const [movies, setMovies] = useState([]);
@@ -18,14 +19,14 @@ function App() {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    performSearch("avengers");
+    performSearch("dune");
   }, []);
 
   const performSearch = async (term = searchTerm) => {
-    const finalTerm = term.trim() || "avengers";
+    const finalTerm = term.trim() || "dune";
 
     setLoading(true);
-    setHasSearched(finalTerm !== "avengers"); // 👈 KEY LINE
+    setHasSearched(finalTerm !== "dune");
 
     const results = await searchMovies(finalTerm);
     setMovies(results);
