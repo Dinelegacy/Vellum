@@ -1,6 +1,5 @@
 const API_KEY = process.env.REACT_APP_OMDB_API_KEY || "5328cf5d";
 const BASE_URL = "https://www.omdbapi.com/";
-
 export const searchMovies = async (term) => {
     if (!API_KEY) {
         console.error("API Key is missing!");
@@ -12,7 +11,6 @@ export const searchMovies = async (term) => {
         const data = await response.json();
 
         if (data.Search) {
-            // Removes duplicates based on imdbID
             const uniqueMovies = data.Search.filter(
                 (movie, index, self) =>
                     index === self.findIndex((m) => m.imdbID === movie.imdbID)

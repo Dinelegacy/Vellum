@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import MovieList from "./components/MovieList/MovieList";
 import MoviePopup from "./components/MoviePopup/MoviePopup";
 import MovieItem from "./components/MovieItem/MovieItem";
+import AddMovie from "./components/AddMovie/AddMovie";
+import Favorites from "./components/Favorite/Favorite";
 import { useWindowWidth } from "./hooks/useWindowWidth";
 import { searchMovies } from "./services/Api";
 import "./App.css";
@@ -13,6 +15,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     performSearch("avengers");
@@ -37,6 +40,15 @@ function App() {
   const handleUpdateMovie = (id, newTitle) => {
     setMovies(movies.map((m) => (m.id === id ? { ...m, title: newTitle } : m)));
   };
+  const handleAddToFavorites = (movie) => {
+    if (!favorites.some((fav) => fav.id === movie.id)) {
+      setFavorites([...favorites, movie]);
+      // This alert provides "Feedback for user actions" (Requirement)
+      alert(`${movie.title} added to Favorites!`);
+    } else {
+      alert("This movie is already in your favorites.");
+    }
+  };
 
   return (
     <div>
@@ -45,6 +57,7 @@ function App() {
         <div className="hero-content">
           <h1>Unlimited movies, series and more</h1>
           <p>Search your favorite movies instantly</p>
+          <AddMovie onAdd={handleAddToFavorites} />
           <div className="search-box">
             <input
               type="text"
@@ -71,6 +84,9 @@ function App() {
       </div>
 
       <div className="content">
+        <Favorites favorites={favorites} onSelect={setSelectedMovie} />
+
+        <hr />
         <h2>{hasSearched ? "Search Results" : "Trending Movies"}</h2>
         {loading ? (
           <p>Loading movies...</p>
