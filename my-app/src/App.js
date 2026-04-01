@@ -29,10 +29,7 @@ function App() {
   };
 
   useEffect(() => {
-    const performSearch = () => {
-    };
-
-    performSearch();
+    performSearch("dune");
   }, []);
 
   useEffect(() => {
