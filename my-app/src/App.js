@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import MovieList from "./components/MovieList/MovieList";
 import MoviePopup from "./components/MoviePopup/MoviePopup";
-import MovieItem from "./components/MovieItem/MovieItem";
 import AddMovie from "./components/AddMovie/AddMovie";
 import Favorites from "./components/Favorite/Favorite";
 import { useWindowWidth } from "./hooks/useWindowWidth";
 import { searchMovies } from "./services/Api";
 import "./App.css";
-import "./index.css"
+import "./index.css";
 
 function App() {
   const width = useWindowWidth();
@@ -16,48 +15,86 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
-  const [favorites, setFavorites] = useState([]);
 
+  // 1. Load from Storage (Persistence)
+  const [favorites, setFavorites] = useState(() => {
+    const savedData = localStorage.getItem("my-watchlist");
+    return savedData ? JSON.parse(savedData) : [];
+  });
+
+  // Helper to make posters high-resolution (The "4K" Quality Fix)
+  const upgradePoster = (movie) => {
+    if (movie.poster && movie.poster.includes("SX300")) {
+      return { ...movie, poster: movie.poster.replace("SX300", "SX1000") };
+    }
+    return movie;
+  };
+
+  // 2. Initial Search on Load
   useEffect(() => {
     performSearch("dune");
   }, []);
 
+  // 3. Save to Storage whenever Favorites change
+  useEffect(() => {
+    localStorage.setItem("my-watchlist", JSON.stringify(favorites));
+  }, [favorites]);
+
   const performSearch = async (term = searchTerm) => {
     const finalTerm = term.trim() || "dune";
-
     setLoading(true);
     setHasSearched(finalTerm !== "dune");
 
     const results = await searchMovies(finalTerm);
-    setMovies(results);
+    const highResResults = results.map(upgradePoster);
+
+    setMovies(highResResults);
     setLoading(false);
   };
 
+  // --- PERSISTENT LOGIC (FIXED) ---
+
   const handleDeleteMovie = (id) => {
-    setMovies(movies.filter((movie) => movie.id !== id));
+    // Targets the favorites list so the change is permanent
+    setFavorites(favorites.filter((movie) => (movie.id !== id && movie.imdbID !== id)));
     setSelectedMovie(null);
   };
 
   const handleUpdateMovie = (id, newTitle) => {
-    setMovies(movies.map((m) => (m.id === id ? { ...m, title: newTitle } : m)));
+    // Targets the favorites list so the edit is permanent
+    setFavorites(favorites.map((m) =>
+      (m.id === id || m.imdbID === id) ? { ...m, title: newTitle } : m
+    ));
   };
-  const handleAddToFavorites = (movie) => {
-    if (!favorites.some((fav) => fav.id === movie.id)) {
-      setFavorites([...favorites, movie]);
-      // This alert provides "Feedback for user actions" (Requirement)
-      alert(`${movie.title} added to Favorites!`);
+
+  const handleAddToFavorites = async (movie) => {
+    let movieToAdd;
+
+    if (typeof movie === "string") {
+      const results = await searchMovies(movie);
+      movieToAdd = results.length > 0 ? upgradePoster(results[0]) : { id: Date.now(), title: movie, poster: "N/A" };
+    } else if (movie.id && movie.id.toString().startsWith('custom-')) {
+      const results = await searchMovies(movie.title);
+      if (results && results.length > 0) {
+        movieToAdd = upgradePoster(results[0]);
+      } else {
+        movieToAdd = movie;
+      }
     } else {
-      alert("This movie is already in your favorites.");
+      movieToAdd = upgradePoster(movie);
+    }
+
+    if (!favorites.some((fav) => (fav.id === movieToAdd.id || fav.imdbID === movieToAdd.imdbID))) {
+      setFavorites([...favorites, movieToAdd]);
     }
   };
 
-  // Replace your return statement in App.js with this cleaner structure
   return (
     <div className="app-container">
-      {/* FIXED NAVBAR: Distinction for UI focus */}
       <nav className="navbar">
         <div className="logo">VELLUM</div>
         <div className="nav-actions">
+          {/* THE PREMIUM SEARCH BAR: Stays visible but looks sleek */}
           <div className="search-wrapper">
             <input
               type="text"
@@ -66,14 +103,13 @@ function App() {
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && performSearch()}
             />
-            <button onClick={() => performSearch()}>🔍</button>
+            <button className="search-btn" onClick={() => performSearch()}>🔍</button>
           </div>
         </div>
       </nav>
 
-      {/* HERO SECTION: Now purely cinematic */}
       <div className="hero">
-        <div className="hero-overlay"></div> {/* Add this for the fade effect */}
+        <div className="hero-overlay"></div>
         <div className="hero-content">
           <h1>Unlimited movies, series and more</h1>
           <p>Your portal to world-class entertainment.</p>
@@ -85,7 +121,6 @@ function App() {
       </div>
 
       <div className="content-area">
-        {/* ADD MOVIE: Distinction for UX - keep it separate or in a modal */}
         <section className="admin-section">
           <AddMovie onAdd={handleAddToFavorites} />
         </section>

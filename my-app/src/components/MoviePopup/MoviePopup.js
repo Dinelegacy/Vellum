@@ -1,47 +1,59 @@
 import { useState, useEffect } from "react";
-// This brings in the function to get the real Plot and Rating
 import { getMovieDetails } from "../../services/Api";
 
 function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
-    const [details, setDetails] = useState(null); // Real movie data (Plot, Rated, etc.)
+    const [details, setDetails] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [newTitle, setNewTitle] = useState(movie.Title || movie.title);
+
+    // 1. IMPORTANT: Always use the title from the 'movie' prop passed from App.js
+    // This ensures your edits from LocalStorage are what the user sees first.
+    const [newTitle, setNewTitle] = useState(movie.title || "");
 
     useEffect(() => {
         const fetchInfo = async () => {
-            // We use the movie's unique ID to fetch the deep information
             const data = await getMovieDetails(movie.imdbID || movie.id);
-            setDetails(data);
+
+            // 2. MERGE DATA: Keep the API plot/year, but KEEEP your edited title
+            setDetails({
+                ...data,
+                Title: movie.title || data.Title // Priority: Your Edit > API Title
+            });
+
+            if (!newTitle) setNewTitle(movie.title || data.Title);
         };
         if (movie) fetchInfo();
-    }, [movie]);
+    }, [movie]); // Re-runs when a new movie is selected
 
-    // 1. LOADING STATE: Shows while waiting for the API
+    const handleSave = () => {
+        const movieId = movie.imdbID || movie.id;
+
+        // 3. Update the Main App State (which updates LocalStorage)
+        onUpdate(movieId, newTitle);
+
+        // 4. Update local popup state so it doesn't flicker back
+        setDetails(prev => ({ ...prev, Title: newTitle }));
+        setIsEditing(false);
+    };
+
     if (!details) return (
-        <div className="modal">
-            <div className="loader">Loading Cinematic Details...</div>
-        </div>
+        <div className="modal"><div className="loader">Loading...</div></div>
     );
 
-    // 2. IMAGE QUALITY FIX: Changes the low-res "300" to high-res "1000"
     const highResPoster = details.Poster && details.Poster !== "N/A"
         ? details.Poster.replace("SX300", "SX1000")
-        : "https://via.placeholder.com/1000x1500?text=No+Image+Available";
+        : movie.poster;
 
     return (
         <div className="modal" onClick={onClose}>
             <div className="modal-content netflix-style" onClick={(e) => e.stopPropagation()}>
-                {/* Close Button */}
                 <button className="close-x" onClick={onClose}>&times;</button>
 
-                {/* Wide Cinematic Header */}
                 <div className="modal-header-image">
-                    <img src={highResPoster} alt={details.Title} />
+                    <img src={movie.poster || highResPoster} alt={newTitle} />
                     <div className="modal-overlay-bottom"></div>
                 </div>
 
                 <div className="modal-body">
-                    {/* Title Section (Edit Mode Logic) */}
                     {isEditing ? (
                         <input
                             className="modal-edit-input"
@@ -50,31 +62,28 @@ function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
                             autoFocus
                         />
                     ) : (
+                        /* Use details.Title which we prioritized in the useEffect */
                         <h2 className="movie-title-large">{details.Title}</h2>
                     )}
 
-                    {/* REAL DATA: Fetched from the API */}
                     <div className="movie-metadata">
-                        <span className="year">{details.Year}</span>
+                        <span>{details.Year}</span>
                         <span className="age-tag">{details.Rated}</span>
-                        <span className="runtime">{details.Runtime}</span>
-                        <span className="format">HD</span>
+                        <span>{details.Runtime}</span>
                     </div>
 
-                    {/* REAL DESCRIPTION: The 'Plot' from OMDB */}
                     <p className="movie-description">{details.Plot}</p>
 
-                    {/* Action Buttons */}
                     <div className="modal-buttons">
                         {isEditing ? (
                             <>
-                                <button className="btn-save" onClick={() => { onUpdate(movie.imdbID || movie.id, newTitle); setIsEditing(false); }}>Save</button>
+                                <button className="btn-save" onClick={handleSave}>Save</button>
                                 <button className="btn-cancel" onClick={() => setIsEditing(false)}>Cancel</button>
                             </>
                         ) : (
                             <>
                                 <button className="btn-edit-trigger" onClick={() => setIsEditing(true)}>Edit Title</button>
-                                <button className="btn-delete" onClick={() => { onDelete(movie.imdbID || movie.id); onClose(); }}>Remove from List</button>
+                                <button className="btn-delete" onClick={() => { onDelete(movie.imdbID || movie.id); }}>Remove</button>
                             </>
                         )}
                     </div>
