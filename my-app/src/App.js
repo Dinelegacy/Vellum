@@ -5,8 +5,8 @@ import AddMovie from "./components/AddMovie/AddMovie";
 import Favorites from "./components/Favorite/Favorite";
 import { useWindowWidth } from "./hooks/useWindowWidth";
 import { searchMovies } from "./services/Api";
+import Footer from "./components/Footer/Footer";
 import "./App.css";
-import "./index.css";
 
 function App() {
   useWindowWidth();
@@ -48,21 +48,25 @@ function App() {
     setLoading(false);
   };
 
-
   const handleDeleteMovie = (id) => {
     setFavorites(favorites.filter((movie) => (movie.id !== id && movie.imdbID !== id)));
     setSelectedMovie(null);
   };
 
   const handleUpdateMovie = (id, newTitle) => {
-    setFavorites(favorites.map((m) =>
+    setFavorites(prev => prev.map((m) =>
       (m.id === id || m.imdbID === id) ? { ...m, title: newTitle } : m
     ));
+
+    setMovies(prev => prev.map((m) =>
+      (m.id === id || m.imdbID === id) ? { ...m, title: newTitle } : m
+    ));
+
+    setSelectedMovie(prev => prev ? { ...prev, title: newTitle } : null);
   };
 
   const handleAddToFavorites = async (movie) => {
     let movieToAdd;
-
     if (typeof movie === "string") {
       const results = await searchMovies(movie);
       movieToAdd = results.length > 0 ? upgradePoster(results[0]) : { id: Date.now(), title: movie, poster: "N/A" };
@@ -119,11 +123,14 @@ function App() {
 
         {favorites.length > 0 && (
           <section className="row">
+            <div className="cinematic-separator"></div>
+            <h2>My Watchlist</h2>
             <Favorites favorites={favorites} onSelect={setSelectedMovie} />
           </section>
         )}
 
         <section className="row">
+          <div className="cinematic-separator"></div>
           <h2>{hasSearched ? `Results for: ${searchTerm}` : "Trending Movies"}</h2>
           {loading ? (
             <div className="loader">Loading...</div>
@@ -141,6 +148,8 @@ function App() {
           onUpdate={handleUpdateMovie}
         />
       )}
+
+      <Footer />
     </div>
   );
 }

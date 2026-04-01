@@ -126,10 +126,26 @@
   z-index: 2;
 }
 
+/* --- NEW CINEMATIC SEPARATOR --- */
+.cinematic-separator {
+  border: none;
+  height: 1px;
+  width: 100%;
+  margin: 20px 0 40px 0;
+  /* Fades from dark to tunnel-amber to dark */
+  background: linear-gradient(to right,
+      transparent 0%,
+      #cc8833 50%,
+      transparent 100%);
+  /* Optional: Adds a very soft glow effect */
+  box-shadow: 0 0 10px rgba(204, 136, 51, 0.3);
+}
+
 .row h2 {
   color: white;
   margin-left: 10px;
   font-size: 1.5rem;
+  letter-spacing: 1px;
 }
 
 .movie-card {

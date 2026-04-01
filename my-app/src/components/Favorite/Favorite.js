@@ -6,8 +6,6 @@ function Favorites({ favorites, onSelect }) {
 
     return (
         <div className="favorites-section">
-            <hr />
-            <h2>My Watchlist</h2>
             <MovieList movies={favorites} onSelect={onSelect} />
         </div>
     );

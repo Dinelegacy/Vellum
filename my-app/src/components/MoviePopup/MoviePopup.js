@@ -18,16 +18,21 @@ function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
         };
         if (movie) fetchInfo();
 
-        // This line below is exactly what fixes the warning:
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [movie]);
 
     const handleSave = () => {
         const movieId = movie.imdbID || movie.id;
         onUpdate(movieId, newTitle);
-
-        setDetails(prev => ({ ...prev, Title: newTitle }));
+        if (details) setDetails(prev => ({ ...prev, Title: newTitle }));
         setIsEditing(false);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSave();
+        } else if (e.key === "Escape") {
+            setIsEditing(false);
+        }
     };
 
     if (!details) return (
@@ -54,10 +59,10 @@ function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
                             className="modal-edit-input"
                             value={newTitle}
                             onChange={(e) => setNewTitle(e.target.value)}
-                            autoFocus
+                            onKeyDown={handleKeyDown} // Listen for Enter
+                            autoFocus // Focus immediately
                         />
                     ) : (
-
                         <h2 className="movie-title-large">{details.Title}</h2>
                     )}
 
