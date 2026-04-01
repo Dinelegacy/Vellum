@@ -25,27 +25,13 @@ A clean, **Netflix-inspired movie discovery app**. Search for titles, manage a p
 
 ## Getting Started
 
-1. **Clone the repo**
 
-```bash
-git clone https://github.com/your-username/vellum.git
+Clone the repo, install dependencies, and start the development server in one go:  
+`git clone https://github.com/your-username/vellum.git` • `npm install` • `npm start`  
 
----
+## Project Structure
 
-npm install
-
----
-
-npm start
-
----
-
-Project Structure
-	•	src/App.js – Main logic hub for search and global state management.
-	•	src/components/ – Modular components for Movie List, Watchlist, and Detail Popup.
-	•	src/App.css – Cinematic styling, layout, and animations.
-	•	src/hooks/ – Custom hooks (e.g., useWindowWidth) for responsive behavior.
-
-    ---
-
-    
+- `src/App.js` – Main logic hub for search and global state management.  
+- `src/components/` – Modular components for Movie List, Watchlist, and Detail Popup.  
+- `src/App.css` – Cinematic styling and layout 
+- `src/hooks/` – Custom hooks (e.g., `useWindowWidth`) for responsive behavior.
