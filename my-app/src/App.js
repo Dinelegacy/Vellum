@@ -29,8 +29,11 @@ function App() {
   };
 
   useEffect(() => {
-    performSearch("dune");
-  }, [performSearch]);
+    const performSearch = () => {
+    };
+
+    performSearch();
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("my-watchlist", JSON.stringify(favorites));
