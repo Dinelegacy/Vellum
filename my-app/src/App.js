@@ -9,20 +9,18 @@ import "./App.css";
 import "./index.css";
 
 function App() {
-  const width = useWindowWidth();
+  useWindowWidth();
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
 
-  // 1. Load from Storage (Persistence)
   const [favorites, setFavorites] = useState(() => {
     const savedData = localStorage.getItem("my-watchlist");
     return savedData ? JSON.parse(savedData) : [];
   });
 
-  // Helper to make posters high-resolution (The "4K" Quality Fix)
   const upgradePoster = (movie) => {
     if (movie.poster && movie.poster.includes("SX300")) {
       return { ...movie, poster: movie.poster.replace("SX300", "SX1000") };
@@ -30,12 +28,10 @@ function App() {
     return movie;
   };
 
-  // 2. Initial Search on Load
   useEffect(() => {
     performSearch("dune");
-  }, []);
+  }, [performSearch]);
 
-  // 3. Save to Storage whenever Favorites change
   useEffect(() => {
     localStorage.setItem("my-watchlist", JSON.stringify(favorites));
   }, [favorites]);
@@ -52,16 +48,13 @@ function App() {
     setLoading(false);
   };
 
-  // --- PERSISTENT LOGIC (FIXED) ---
 
   const handleDeleteMovie = (id) => {
-    // Targets the favorites list so the change is permanent
     setFavorites(favorites.filter((movie) => (movie.id !== id && movie.imdbID !== id)));
     setSelectedMovie(null);
   };
 
   const handleUpdateMovie = (id, newTitle) => {
-    // Targets the favorites list so the edit is permanent
     setFavorites(favorites.map((m) =>
       (m.id === id || m.imdbID === id) ? { ...m, title: newTitle } : m
     ));
@@ -94,7 +87,6 @@ function App() {
       <nav className="navbar">
         <div className="logo">VELLUM</div>
         <div className="nav-actions">
-          {/* THE PREMIUM SEARCH BAR: Stays visible but looks sleek */}
           <div className="search-wrapper">
             <input
               type="text"

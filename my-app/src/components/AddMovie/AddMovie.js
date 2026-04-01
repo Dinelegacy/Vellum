@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 function AddMovie({ onAdd }) {
     const [title, setTitle] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
-    // Inside your AddMovie component
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!title.trim()) return;
@@ -16,13 +15,9 @@ function AddMovie({ onAdd }) {
 
         onAdd(newMovie);
         setTitle("");
-
-        // Trigger the Toast
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
     };
-
-    // Update the JSX at the bottom of the return:
     return (
         <div className="add-movie-container">
             <form onSubmit={handleSubmit} className="add-movie-form">
@@ -37,7 +32,6 @@ function AddMovie({ onAdd }) {
                 </div>
             </form>
 
-            {/* This is the Toast Notification */}
             <div className={`toast-notification ${showSuccess ? "show" : ""}`}>
                 <span className="toast-check">✓</span> {title || "Movie"} added to your watchlist
             </div>

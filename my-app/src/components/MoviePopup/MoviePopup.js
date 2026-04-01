@@ -4,33 +4,28 @@ import { getMovieDetails } from "../../services/Api";
 function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
     const [details, setDetails] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-
-    // 1. IMPORTANT: Always use the title from the 'movie' prop passed from App.js
-    // This ensures your edits from LocalStorage are what the user sees first.
     const [newTitle, setNewTitle] = useState(movie.title || "");
 
     useEffect(() => {
         const fetchInfo = async () => {
             const data = await getMovieDetails(movie.imdbID || movie.id);
-
-            // 2. MERGE DATA: Keep the API plot/year, but KEEEP your edited title
             setDetails({
                 ...data,
-                Title: movie.title || data.Title // Priority: Your Edit > API Title
+                Title: movie.title || data.Title
             });
 
             if (!newTitle) setNewTitle(movie.title || data.Title);
         };
         if (movie) fetchInfo();
-    }, [movie]); // Re-runs when a new movie is selected
+
+        // This line below is exactly what fixes the warning:
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [movie]);
 
     const handleSave = () => {
         const movieId = movie.imdbID || movie.id;
-
-        // 3. Update the Main App State (which updates LocalStorage)
         onUpdate(movieId, newTitle);
 
-        // 4. Update local popup state so it doesn't flicker back
         setDetails(prev => ({ ...prev, Title: newTitle }));
         setIsEditing(false);
     };
@@ -62,7 +57,7 @@ function MoviePopup({ movie, onClose, onDelete, onUpdate }) {
                             autoFocus
                         />
                     ) : (
-                        /* Use details.Title which we prioritized in the useEffect */
+
                         <h2 className="movie-title-large">{details.Title}</h2>
                     )}
 

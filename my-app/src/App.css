@@ -1,4 +1,3 @@
-/* --- NAVIGATION --- */
 .navbar {
   position: fixed;
   top: 0;
@@ -56,7 +55,6 @@
   font-size: 1.1rem;
 }
 
-/* --- HERO SECTION --- */
 .hero {
   position: relative;
   height: 85vh;
@@ -121,7 +119,6 @@
   color: white;
 }
 
-/* --- CONTENT --- */
 .content-area {
   padding: 40px 4%;
   margin-top: -100px;
@@ -135,7 +132,6 @@
   font-size: 1.5rem;
 }
 
-/* --- MOVIE CARDS --- */
 .movie-card {
   min-width: 200px;
   flex-shrink: 0;
@@ -145,7 +141,6 @@
   position: relative;
   margin: 10px;
   background-color: #181818;
-  /* Fix: Gives card a base color if image fails */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -165,7 +160,6 @@
   display: block;
 }
 
-/* Fix: Ensures titles are always readable and positioned correctly on the card */
 .movie-card-overlay {
   position: absolute;
   bottom: 0;
@@ -185,7 +179,6 @@
   text-transform: capitalize;
 }
 
-/* --- MODAL (POPUP) --- */
 .modal {
   position: fixed;
   top: 0;
@@ -308,7 +301,6 @@
   border-radius: 10px;
 }
 
-/* --- MODAL BUTTONS & ACTIONS --- */
 .modal-buttons {
   display: flex;
   gap: 16px;
@@ -366,7 +358,6 @@
   transform: translateY(0);
 }
 
-/* --- ADMIN SECTION (ADD MOVIE) --- */
 .admin-section {
   padding: 20px;
   display: flex;
@@ -413,13 +404,11 @@
   transition: 0.2s;
 }
 
-/* --- TOAST NOTIFICATION --- */
 .toast-notification {
   position: fixed;
   bottom: 30px;
   left: 30px;
   background-color: #f3f3f3;
-  /* Light grey/white like Netflix mobile toasts */
   color: #141414;
   padding: 12px 24px;
   border-radius: 4px;
@@ -430,8 +419,6 @@
   gap: 10px;
   z-index: 3000;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-
-  /* Initial state: Hidden and dropped down */
   opacity: 0;
   transform: translateY(100px);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
