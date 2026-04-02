@@ -1,4 +1,4 @@
-const API_KEY = process.env.REACT_APP_OMDB_API_KEY || "5328cf5d";
+const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 const BASE_URL = "https://www.omdbapi.com/";
 
 export const searchMovies = async (term) => {
