@@ -1,44 +1,69 @@
-const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 const BASE_URL = "https://www.omdbapi.com/";
+const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 
-export const searchMovies = async (term) => {
-    if (!API_KEY) {
-        console.error("API Key is missing!");
-        return [];
-    }
+// ✅ Debug (remove later)
+console.log("API KEY:", API_KEY);
 
+export const searchMovies = async (query) => {
     try {
-        const response = await fetch(`${BASE_URL}?s=${term}&apikey=${API_KEY}`);
+        if (!API_KEY) {
+            throw new Error("Missing API key. Check your .env file.");
+        }
+
+        const response = await fetch(
+            `${BASE_URL}?s=${encodeURIComponent(query)}&apikey=${API_KEY}`
+        );
+
         const data = await response.json();
 
-        if (data.Search) {
-            const uniqueMovies = data.Search.filter(
-                (movie, index, self) =>
-                    index === self.findIndex((m) => m.imdbID === movie.imdbID)
-            );
-
-            return uniqueMovies.map((movie) => ({
+        if (data.Response === "True") {
+            return data.Search.map((movie) => ({
                 id: movie.imdbID,
                 title: movie.Title,
-                poster: movie.Poster !== "N/A" ? movie.Poster : "https://via.placeholder.com/300x450?text=No+Image"
+                year: movie.Year,
+                poster: movie.Poster !== "N/A" ? movie.Poster : null,
+                type: movie.Type,
             }));
         }
+
+        console.warn("No results:", data.Error);
         return [];
     } catch (error) {
-        console.error("Fetch error:", error);
+        console.error("Error fetching movies:", error);
         return [];
     }
 };
 
 export const getMovieDetails = async (id) => {
-    if (!API_KEY) return null;
-
     try {
-        const response = await fetch(`${BASE_URL}?i=${id}&apikey=${API_KEY}&plot=full`);
+        if (!API_KEY) {
+            throw new Error("Missing API key. Check your .env file.");
+        }
+
+        const response = await fetch(
+            `${BASE_URL}?i=${id}&plot=full&apikey=${API_KEY}`
+        );
+
         const data = await response.json();
-        return data;
+
+        if (data.Response === "True") {
+            return {
+                id: data.imdbID,
+                title: data.Title,
+                year: data.Year,
+                poster: data.Poster !== "N/A" ? data.Poster : null,
+                plot: data.Plot,
+                rating: data.imdbRating,
+                director: data.Director,
+                actors: data.Actors,
+                genre: data.Genre,
+            };
+        }
+
+        console.warn("No details:", data.Error);
+        return null;
     } catch (error) {
-        console.error("Detail Fetch error:", error);
+        console.error("Error fetching movie details:", error);
         return null;
     }
 };

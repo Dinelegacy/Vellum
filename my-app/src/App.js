@@ -22,46 +22,54 @@ function App() {
   });
 
   const upgradePoster = (movie) => {
-    if (movie.poster && movie.poster.includes("SX300")) {
+    if (movie?.poster?.includes("SX300")) {
       return { ...movie, poster: movie.poster.replace("SX300", "SX1000") };
     }
     return movie;
   };
+  // Change the function signature to handle empty terms better
+  const performSearch = async (term) => {
+    // If term is empty or not a string, default to "dune"
+    const finalTerm = (typeof term === 'string' && term.trim() !== "") ? term.trim() : "dune";
 
+    setLoading(true);
+    setHasSearched(finalTerm !== "dune");
+
+    try {
+      const results = await searchMovies(finalTerm);
+      // Add a console.log here to see what the API is actually sending back!
+      console.log("API Results:", results);
+
+      // Ensure results is an array before mapping
+      const highResResults = Array.isArray(results) ? results.map(upgradePoster) : [];
+      setMovies(highResResults);
+    } catch (error) {
+      console.error("Search failed:", error);
+      setMovies([]); // Clear movies on error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Ensure the initial call is explicit
   useEffect(() => {
     performSearch("dune");
   }, []);
+
 
   useEffect(() => {
     localStorage.setItem("my-watchlist", JSON.stringify(favorites));
   }, [favorites]);
 
-  const performSearch = async (term = searchTerm) => {
-    const finalTerm = term.trim() || "dune";
-    setLoading(true);
-    setHasSearched(finalTerm !== "dune");
-
-    const results = await searchMovies(finalTerm);
-    const highResResults = results.map(upgradePoster);
-
-    setMovies(highResResults);
-    setLoading(false);
-  };
-
   const handleDeleteMovie = (id) => {
-    setFavorites(favorites.filter((movie) => (movie.id !== id && movie.imdbID !== id)));
+    setFavorites(favorites.filter((m) => (m.id !== id && m.imdbID !== id)));
     setSelectedMovie(null);
   };
 
   const handleUpdateMovie = (id, newTitle) => {
-    setFavorites(prev => prev.map((m) =>
-      (m.id === id || m.imdbID === id) ? { ...m, title: newTitle } : m
-    ));
-
-    setMovies(prev => prev.map((m) =>
-      (m.id === id || m.imdbID === id) ? { ...m, title: newTitle } : m
-    ));
-
+    const update = (list) => list.map(m => (m.id === id || m.imdbID === id) ? { ...m, title: newTitle } : m);
+    setFavorites(update);
+    setMovies(update);
     setSelectedMovie(prev => prev ? { ...prev, title: newTitle } : null);
   };
 
@@ -70,13 +78,6 @@ function App() {
     if (typeof movie === "string") {
       const results = await searchMovies(movie);
       movieToAdd = results.length > 0 ? upgradePoster(results[0]) : { id: Date.now(), title: movie, poster: "N/A" };
-    } else if (movie.id && movie.id.toString().startsWith('custom-')) {
-      const results = await searchMovies(movie.title);
-      if (results && results.length > 0) {
-        movieToAdd = upgradePoster(results[0]);
-      } else {
-        movieToAdd = movie;
-      }
     } else {
       movieToAdd = upgradePoster(movie);
     }
@@ -97,9 +98,9 @@ function App() {
               placeholder="Search titles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && performSearch()}
+              onKeyDown={(e) => e.key === "Enter" && performSearch(searchTerm)}
             />
-            <button className="search-btn" onClick={() => performSearch()}>🔍</button>
+            <button className="search-btn" onClick={() => performSearch(searchTerm)}>🔍</button>
           </div>
         </div>
       </nav>
@@ -134,8 +135,10 @@ function App() {
           <h2>{hasSearched ? `Results for: ${searchTerm}` : "Trending Movies"}</h2>
           {loading ? (
             <div className="loader">Loading...</div>
-          ) : (
+          ) : movies.length > 0 ? (
             <MovieList movies={movies} onSelect={setSelectedMovie} />
+          ) : (
+            <p className="no-results">No movies found. Try searching for something else!</p>
           )}
         </section>
       </div>
@@ -148,7 +151,6 @@ function App() {
           onUpdate={handleUpdateMovie}
         />
       )}
-
       <Footer />
     </div>
   );
