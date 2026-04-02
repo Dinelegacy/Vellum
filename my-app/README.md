@@ -1,37 +1,61 @@
-# Vellum 🍿
 
-A clean, **Netflix-inspired movie discovery app**. Search for titles, manage a personal watchlist, and explore high-resolution movie details. Built with **React** and the **OMDB API**.  
+⸻
 
----
+VELLUM – Cinematic Movie Workspace 🎬
 
-## Core Features
+VELLUM is a high-end React-based movie discovery and management app. It offers a Netflix-style experience with real-time editing, local persistence, and cinematic visual design.
 
-- **Search & Discover:** Instantly find movies and series via the OMDB database.  
-- **Persistent Watchlist:** Save your favorites in "My Watchlist" with data persisted in LocalStorage.  
-- **Smart Posters:** Low-res API thumbnails are automatically replaced with high-definition posters.  
-- **Edit & Manage:** Update movie titles or remove them directly through the detail popup.  
-- **Responsive UI:** Fully adaptive design for desktop, tablet, and mobile.  
+⸻
 
----
+🚀 Key Features
 
-## Tech Stack
+1. Dynamic Search & Trending
+	•	Live API Integration: Fetches real-time movie data from the OMDb API￼.
+	•	Initial Discovery: Automatically loads “Dune” on startup so the UI is never empty.
+	•	Instant Search: Search for any movie title with immediate results.
 
-- **Frontend:** React (Functional Components & Hooks)  
-- **Styling:** Pure CSS (custom layouts, no external frameworks)  
-- **API:** OMDB API  
-- **Storage:** Browser LocalStorage  
+2. Advanced Movie Management (CRUD)
+	•	Custom Watchlist: Add your own movies manually.
+	•	Persistent Storage: Watchlist saved in Local Storage across sessions.
+	•	Inline Editing: Edit movie details directly in the popup.
+	•	Optimized UX: Press Enter to save edits, Escape to cancel, autoFocus for smooth interaction.
 
----
+3. Premium Cinematic UI/UX
+	•	High-Resolution Assets: Low-quality thumbnails replaced with HD posters.
+	•	Cinematic Layout: Hero section with dark overlay and Amber Glow separators.
+	•	Modern Footer: Minimalist footer with logo, links, and contact email.
 
-## Getting Started
+4. Technical Architecture
+	•	Reusable Components: MovieList, MoviePopup, Favorites, AddMovie, Footer.
+	•	Conditional Rendering: Watchlist appears only when movies are added.
+	•	Custom Hooks: useWindowWidth for responsive layouts.
 
+⸻
 
-Clone the repo, install dependencies, and start the development server in one go:  
-`git clone https://github.com/your-username/vellum.git` • `npm install` • `npm start`  
+🛠️ Deployment & Hosting
+	•	Vercel Optimized: SPA routing handled via vercel.json to prevent 404s on page refresh.
 
-## Project Structure
+⸻
 
-- `src/App.js` – Main logic hub for search and global state management.  
-- `src/components/` – Modular components for Movie List, Watchlist, and Detail Popup.  
-- `src/App.css` – Cinematic styling and layout 
-- `src/hooks/` – Custom hooks (e.g., `useWindowWidth`) for responsive behavior.
+💻 Tech Stack
+	•	Frontend: React.js
+	•	Styling: CSS3 (Custom Cinematic Theme)
+	•	API: OMDb (Open Movie Database)
+	•	Deployment: Vercel
+
+⸻
+
+📖 Run Locally
+	1.	Clone the repository: https://github.com/Dinelegacy/Vellum.git
+
+ ____
+
+    2. npm install
+
+ ____
+
+    3. npm start
+
+ ____
+
+    4. Open http://localhost:3000￼ in your browser
