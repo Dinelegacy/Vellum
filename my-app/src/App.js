@@ -1,15 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import MovieList from "./components/MovieList/MovieList";
 import MoviePopup from "./components/MoviePopup/MoviePopup";
 import AddMovie from "./components/AddMovie/AddMovie";
 import Favorites from "./components/Favorite/Favorite";
-import { useWindowWidth } from "./hooks/useWindowWidth";
 import { searchMovies } from "./services/Api";
+import { upgradePoster } from "./utils/movieUtils";
 import Footer from "./components/Footer/Footer";
 import "./App.css";
 
 function App() {
-  useWindowWidth();
+  const watchlistRef = useRef(null);
+  const addMovieRef = useRef(null);
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,45 +22,37 @@ function App() {
     return savedData ? JSON.parse(savedData) : [];
   });
 
-  const upgradePoster = (movie) => {
-    if (movie?.poster?.includes("SX300")) {
-      return { ...movie, poster: movie.poster.replace("SX300", "SX1000") };
-    }
-    return movie;
-  };
-  // Change the function signature to handle empty terms better
-  const performSearch = async (term) => {
-    // If term is empty or not a string, default to "dune"
-    const finalTerm = (typeof term === 'string' && term.trim() !== "") ? term.trim() : "dune";
-
-    setLoading(true);
-    setHasSearched(finalTerm !== "dune");
-
-    try {
-      const results = await searchMovies(finalTerm);
-      // Add a console.log here to see what the API is actually sending back!
-      console.log("API Results:", results);
-
-      // Ensure results is an array before mapping
-      const highResResults = Array.isArray(results) ? results.map(upgradePoster) : [];
-      setMovies(highResResults);
-    } catch (error) {
-      console.error("Search failed:", error);
-      setMovies([]); // Clear movies on error
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Ensure the initial call is explicit
   useEffect(() => {
-    performSearch("dune");
+    const fetchTrending = async () => {
+      setLoading(true);
+      const results = await searchMovies("Batman");
+      setMovies(results || []);
+      setLoading(false);
+    };
+    fetchTrending();
   }, []);
-
 
   useEffect(() => {
     localStorage.setItem("my-watchlist", JSON.stringify(favorites));
   }, [favorites]);
+
+  const performSearch = async (term) => {
+    const q = term.trim();
+    if (!q) return;
+    setLoading(true);
+    setHasSearched(true);
+    const results = await searchMovies(q);
+    setMovies(results || []);
+    setLoading(false);
+  };
+
+  const scrollToWatchlist = () => {
+    watchlistRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const scrollToAddMovie = () => {
+    addMovieRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const handleDeleteMovie = (id) => {
     setFavorites(favorites.filter((m) => (m.id !== id && m.imdbID !== id)));
@@ -72,21 +65,34 @@ function App() {
     setMovies(update);
     setSelectedMovie(prev => prev ? { ...prev, title: newTitle } : null);
   };
-
-  const handleAddToFavorites = async (movie) => {
+  const handleAddToFavorites = async (movieInput) => {
     let movieToAdd;
-    if (typeof movie === "string") {
-      const results = await searchMovies(movie);
-      movieToAdd = results.length > 0 ? upgradePoster(results[0]) : { id: Date.now(), title: movie, poster: "N/A" };
+
+    if (typeof movieInput === "string") {
+      const results = await searchMovies(movieInput);
+
+      if (results && results.length > 0) {
+        movieToAdd = upgradePoster(results[0]);
+      } else {
+        movieToAdd = {
+          id: `local-${Date.now()}`,
+          title: movieInput,
+          poster: `https://placehold.co/300x450/181818/FFFFFF?text=${encodeURIComponent(movieInput)}`
+        };
+      }
     } else {
-      movieToAdd = upgradePoster(movie);
+      movieToAdd = upgradePoster(movieInput);
     }
 
-    if (!favorites.some((fav) => (fav.id === movieToAdd.id || fav.imdbID === movieToAdd.imdbID))) {
-      setFavorites([...favorites, movieToAdd]);
+    const isDuplicate = favorites.some(
+      (fav) => fav.id === movieToAdd.id || (movieToAdd.imdbID && fav.imdbID === movieToAdd.imdbID)
+    );
+    if (isDuplicate) {
+      return { ok: false, reason: "duplicate" };
     }
+    setFavorites((prev) => [...prev, movieToAdd]);
+    return { ok: true, title: movieToAdd.title };
   };
-
   return (
     <div className="app-container">
       <nav className="navbar">
@@ -94,13 +100,21 @@ function App() {
         <div className="nav-actions">
           <div className="search-wrapper">
             <input
-              type="text"
+              type="search"
               placeholder="Search titles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && performSearch(searchTerm)}
+              aria-label="Search movie titles"
             />
-            <button className="search-btn" onClick={() => performSearch(searchTerm)}>🔍</button>
+            <button
+              type="button"
+              className="search-btn"
+              onClick={() => performSearch(searchTerm)}
+              aria-label="Search movies"
+            >
+              🔍
+            </button>
           </div>
         </div>
       </nav>
@@ -111,34 +125,42 @@ function App() {
           <h1>Unlimited movies, series and more</h1>
           <p>Your portal to world-class entertainment.</p>
           <div className="hero-btns">
-            <button className="btn-play">▶ Play</button>
-            <button className="btn-info">ⓘ More Info</button>
+            <button type="button" className="btn-play" onClick={scrollToWatchlist}>
+              ▶ My watchlist
+            </button>
+            <button type="button" className="btn-info" onClick={scrollToAddMovie}>
+              ⓘ Add a movie
+            </button>
           </div>
         </div>
       </div>
 
       <div className="content-area">
-        <section className="admin-section">
+        <section className="admin-section" ref={addMovieRef}>
           <AddMovie onAdd={handleAddToFavorites} />
         </section>
 
-        {favorites.length > 0 && (
-          <section className="row">
-            <div className="cinematic-separator"></div>
-            <h2>My Watchlist</h2>
-            <Favorites favorites={favorites} onSelect={setSelectedMovie} />
-          </section>
-        )}
-
-        <section className="row">
+        <section className="row" ref={watchlistRef} aria-labelledby="watchlist-heading">
           <div className="cinematic-separator"></div>
-          <h2>{hasSearched ? `Results for: ${searchTerm}` : "Trending Movies"}</h2>
+          <h2 id="watchlist-heading">My Watchlist</h2>
+          <Favorites favorites={favorites} onSelect={setSelectedMovie} />
+        </section>
+
+        <section className="row trending-shelf" aria-labelledby="discovery-heading">
+          <div className="cinematic-separator"></div>
+          <h2 id="discovery-heading">{hasSearched ? `Results for: ${searchTerm}` : "Trending Movies"}</h2>
           {loading ? (
-            <div className="loader">Loading...</div>
+            <div className="loader" role="status" aria-live="polite">
+              Loading…
+            </div>
           ) : movies.length > 0 ? (
-            <MovieList movies={movies} onSelect={setSelectedMovie} />
+            <MovieList movies={movies} onSelect={setSelectedMovie} variant="row" />
           ) : (
-            <p className="no-results">No movies found. Try searching for something else!</p>
+            <p className="no-results" role="status">
+              {hasSearched
+                ? `No results for "${searchTerm.trim()}". Try another title.`
+                : "Nothing to show yet. Use search above or wait for the list to load."}
+            </p>
           )}
         </section>
       </div>

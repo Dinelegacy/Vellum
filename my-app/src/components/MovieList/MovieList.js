@@ -1,15 +1,16 @@
 import MovieItem from "../MovieItem/MovieItem";
 
-function MovieList({ movies, onDelete, onSelect }) {
+function MovieList({ movies, onDelete, onSelect, emptyMessage, variant = "grid" }) {
+    const listClass = variant === "row" ? "movie-row" : "movie-grid";
     return (
         <div>
             {movies.length === 0 ? (
-                <p>No movies yet. Add your first movie!</p>
+                <p className="movie-list-empty" role="status">{emptyMessage || "No movies yet. Add your first movie!"}</p>
             ) : (
-                <ul>
+                <ul className={listClass}>
                     {movies.map((movie) => (
                         <MovieItem
-                            key={movie.id}
+                            key={movie.id || movie.imdbID}
                             movie={movie}
                             onDelete={onDelete}
                             onSelect={onSelect}

@@ -1,28 +1,8 @@
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  /* Netflix-style font */
   background-color: #111;
   color: white;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Row Scroll Styling (The Netflix Row Look) */
-ul {
-  display: flex;
-  flex-direction: row;
-  overflow-x: auto;
-  gap: 15px;
-  padding: 20px 0;
-  list-style: none;
-  margin: 0;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  /* Hides scrollbar on Firefox */
-}
-
-ul::-webkit-scrollbar {
-  display: none;
-  /* Hides scrollbar on Chrome/Safari */
 }

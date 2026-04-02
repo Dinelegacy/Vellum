@@ -1,3 +1,5 @@
+import { upgradePoster } from "../utils/movieUtils";
+
 const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
 const BASE_URL = "https://www.omdbapi.com/";
 
@@ -17,11 +19,16 @@ export const searchMovies = async (term) => {
                     index === self.findIndex((m) => m.imdbID === movie.imdbID)
             );
 
-            return uniqueMovies.map((movie) => ({
-                id: movie.imdbID,
-                title: movie.Title,
-                poster: movie.Poster !== "N/A" ? movie.Poster : "https://via.placeholder.com/300x450?text=No+Image"
-            }));
+            return uniqueMovies.map((movie) =>
+                upgradePoster({
+                    id: movie.imdbID,
+                    title: movie.Title,
+                    poster:
+                        movie.Poster !== "N/A"
+                            ? movie.Poster
+                            : "https://via.placeholder.com/300x450?text=No+Image",
+                })
+            );
         }
         return [];
     } catch (error) {
