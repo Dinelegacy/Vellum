@@ -1,11 +1,11 @@
 
-⸻
+____
 
-VELLUM – Cinematic Movie Workspace 🎬
+VELLUM – Cinematic Movie Workspace 🍿
 
 VELLUM is a high-end React-based movie discovery and management app. It offers a Netflix-style experience with real-time editing, local persistence, and cinematic visual design.
 
-⸻
+ ____
 
 🚀 Key Features
 
@@ -30,12 +30,12 @@ VELLUM is a high-end React-based movie discovery and management app. It offers a
 	•	Conditional Rendering: Watchlist appears only when movies are added.
 	•	Custom Hooks: useWindowWidth for responsive layouts.
 
-⸻
+ ____
 
 🛠️ Deployment & Hosting
 	•	Vercel Optimized: SPA routing handled via vercel.json to prevent 404s on page refresh.
 
-⸻
+ ____
 
 💻 Tech Stack
 	•	Frontend: React.js
@@ -43,7 +43,7 @@ VELLUM is a high-end React-based movie discovery and management app. It offers a
 	•	API: OMDb (Open Movie Database)
 	•	Deployment: Vercel
 
-⸻
+ ____
 
 📖 Run Locally
 	1.	Clone the repository: https://github.com/Dinelegacy/Vellum.git
