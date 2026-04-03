@@ -23,7 +23,7 @@ export const searchMovies = async (term) => {
                 upgradePoster({
                     id: movie.imdbID,
                     title: movie.Title,
-                    poster:
+                poster:
                         movie.Poster !== "N/A"
                             ? movie.Poster
                             : "https://via.placeholder.com/300x450?text=No+Image",
