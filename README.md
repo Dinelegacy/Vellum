@@ -1,59 +1,88 @@
+## VELLUM – Movie App 🍿
 
-VELLUM – Cinematic Movie Workspace 🍿
+VELLUM is a React-based movie application that uses an external API (OMDb) to fetch movie data. It provides a simple and clean interface to search for movies, manage a personal watchlist, and interact with movie data in real time.
 
-VELLUM is a high-end React-based movie discovery and management app. It offers a Netflix-style experience with real-time editing, local persistence, and cinematic visual design.
+____
 
- ____
+## Key Features
 
- Key Features
+1. Movie Search  
+- Search for movies using the OMDb API to retrieve real-time data  
+- Display a default set of movies when the app loads to avoid an empty UI  
+- Show results instantly based on user input for a smoother experience  
 
-1. Dynamic Search & Trending
-	•	Live API Integration: Fetches real-time movie data from the OMDb API￼
-	•	Initial Discovery: Automatically loads “Dune” on startup so the UI is never empty
-	•	Instant Search: Search for any movie title with immediate results
+2. Watchlist (Favorites)  
+- Add movies from search results or create custom entries  
+- Prevent duplicate entries to keep the list clean  
+- Save data in localStorage so the watchlist persists after refresh  
 
-2. Advanced Movie Management (CRUD)
-	•	Custom Watchlist: Add your own movies manually.
-	•	Persistent Storage: Watchlist saved in Local Storage across sessions
-	•	Inline Editing: Edit movie details directly in the popup
-	•	Optimized UX: Press Enter to save edits, Escape to cancel, autoFocus for smooth interaction.
+3. Movie Management  
+- View movie details in a popup for better focus on selected content  
+- Update movie titles directly to allow quick edits  
+- Delete movies from the watchlist to keep it organized  
 
-3. Premium Cinematic UI/UX
-	•	High-Resolution Assets: Low-quality thumbnails replaced with HD posters
-	•	Cinematic Layout: Hero section with dark overlay and Amber Glow separators
-	•	Modern Footer: Minimalist footer with logo, links, and contact email
+4. UI  
+- Responsive layout to support different screen sizes  
+- Hero section to give structure and a clear entry point to the app  
+- Movie cards to display content in a consistent and reusable way  
+- Simple design to keep the focus on functionality  
 
-4. Technical Architecture
-	•	Reusable Components: MovieList, MoviePopup, Favorites, AddMovie, Footer
-	•	Conditional Rendering: Watchlist appears only when movies are added
-	•	Custom Hooks: useWindowWidth for responsive layouts
+____
 
- ____
+## Tech Stack  
 
-  Deployment & Hosting
-	•	Vercel Optimized: SPA routing handled via vercel.json to prevent 404s on page refresh.
+- React (useState, useEffect)  
+   I used it to manage application state and handle side effects like API calls  
 
- ____
+- OMDb API (external API)  
+   I used it to fetch movie data instead of building a custom backend  
 
-  Tech Stack
-	•	Frontend: React.js
-	•	Styling: CSS3 (Custom Cinematic Theme)
-	•	API: OMDb (Open Movie Database)
-	•	Deployment: Vercel
+- CSS  
+   I used it for styling and layout  
 
- ____
+- Local Storage  
+   I used it to persist the watchlist across browser sessions  
 
-  Run Locally
-	1.	Clone the repository: https://github.com/Dinelegacy/Vellum.git
+____
 
- ____
+## Run Locally  
 
-    2. npm install
+1. Clone the repository:  
+https://github.com/Dinelegacy/Vellum.git  
 
- ____
+2. Navigate into the project folder:  
+cd Vellum/my-app  
 
-    3. npm start
+3. Install dependencies:  
+npm install  
 
- ____
+4. Start the application:  
+npm start  
 
-    4. Open http://localhost:3000￼ in your browser
+5. Open in browser:  
+http://localhost:3000  
+
+____
+
+## Notes  
+
+- This project uses the OMDb API, so an internet connection is required  
+- No API setup is needed to run the project  
+- Some movies may not have poster images available  
+- Custom movies use a fallback image when no poster is available  
+
+____
+
+## Challenges  
+
+One challenge I faced was handling movies that don’t have poster images from the API.  
+To avoid broken UI, I added a fallback image so the app still displays correctly.
+
+Another challenge was managing different data types when adding movies (API results vs custom entries).  
+I handled this by normalizing the data before storing it in the watchlist to keep everything consistent.
+
+____
+
+## Summary  
+
+This project demonstrates building a React application that integrates with an external API, manages user data, and maintains state across sessions using localStorage. I focused on keeping the structure clean, components reusable, and the user experience simple.
