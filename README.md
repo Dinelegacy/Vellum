@@ -1,88 +1,34 @@
-## VELLUM – Movie App 🍿
+# VELLUM – Movie Watchlist App 🍿
 
-VELLUM is a React-based movie application that uses an external API (OMDb) to fetch movie data. It provides a simple and clean interface to search for movies, manage a personal watchlist, and interact with movie data in real time.
-
+VELLUM is a React project I built to help users find movies and manage a personal watchlist. It connects to the OMDb API to get real-time movie data and uses local storage so your list doesn't disappear when you refresh the page.
 ____
 
-## Key Features
+## What it does
 
-1. Movie Search  
-- Search for movies using the OMDb API to retrieve real-time data  
-- Display a default set of movies when the app loads to avoid an empty UI  
-- Show results instantly based on user input for a smoother experience  
-
-2. Watchlist (Favorites)  
-- Add movies from search results or create custom entries  
-- Prevent duplicate entries to keep the list clean  
-- Save data in localStorage so the watchlist persists after refresh  
-
-3. Movie Management  
-- View movie details in a popup for better focus on selected content  
-- Update movie titles directly to allow quick edits  
-- Delete movies from the watchlist to keep it organized  
-
-4. UI  
-- Responsive layout to support different screen sizes  
-- Hero section to give structure and a clear entry point to the app  
-- Movie cards to display content in a consistent and reusable way  
-- Simple design to keep the focus on functionality  
-
+- **Search for Movies:** You can look up any title using the search bar. I set it to show some "Batman" movies by default so the home screen isn't empty when you first open it.  
+- **Personal Watchlist:** You can add movies from the search results to your favorites. It checks for duplicates so you don't add the same movie twice.  
+- **Custom Entries:** I added a feature where you can manually type in a movie name to add it, even if it's not in the API.  
+- **Edit & Delete:** If you change your mind, you can update the title of a movie in your list or remove it entirely.  
+- **Persistent Data:** Everything is saved to localStorage, so your watchlist stays there even if you close the browser.  
 ____
 
-## Tech Stack  
+## Tech I used
 
-- React (useState, useEffect, useRef)  
-   I used it to manage application state and handle side effects like API calls  
-
-- OMDb API (external API)  
-   I used it to fetch movie data instead of building a custom backend  
-
-- CSS  
-   I used it for styling and layout  
-
-- Local Storage  
-   I used it to persist the watchlist across browser sessions  
-
+- **React:** Used `useState` for the movie data and `useEffect` to handle the API calls. I also used `useRef` to handle the smooth scrolling buttons in the hero section.  
+- **OMDb API:** This is where all the movie data (titles, posters, IDs) comes from.  
+- **CSS:** All the styling is custom to give it a "cinematic" feel with the dark theme.  
 ____
 
-## Run Locally  
+## How to run it
 
-1. Clone the repository:  
-https://github.com/Dinelegacy/Vellum.git  
-
-2. Navigate into the project folder:  
-cd Vellum/my-app  
-
-3. Install dependencies:  
-npm install  
-
-4. Start the application:  
-npm start  
-
-5. Open in browser:  
-http://localhost:3000  
-
+1. Clone the repo: `git clone https://github.com`  
+2. Go into the folder: `cd Vellum/my-app`  
+3. Install everything: `npm install`  
+4. Run it: `npm start`  
+5. Check it out at [http://localhost:3000](http://localhost:3000)  
 ____
 
-## Notes  
+## Challenges I faced
 
-- This project uses the OMDb API, so an internet connection is required  
-- No API setup is needed to run the project  
-- Some movies may not have poster images available  
-- Custom movies use a fallback image when no poster is available  
-
-____
-
-## Challenges  
-
-One challenge I faced was handling movies that don’t have poster images from the API.  
-To avoid broken UI, I added a fallback image so the app still displays correctly.
-
-Another challenge was managing different data types when adding movies (API results vs custom entries).  
-I handled this by normalizing the data before storing it in the watchlist to keep everything consistent.
-
-____
-
-## Summary  
-
-This project demonstrates building a React application that integrates with an external API, manages user data, and maintains state across sessions using localStorage. I focused on keeping the structure clean, components reusable, and the user experience simple.
+- The biggest issue I had was with the movie posters. Some movies in the OMDb database don't have images (they return "N/A"), which broke my layout. I had to write a utility function to check for this and swap in a placeholder image so the cards didn't look empty.  
+- Another tricky part was normalizing the data. Because I'm allowing both API results and "custom" manual entries, the data objects looked different. I had to make sure they both used the same property names (like `title` and `poster`) before saving them to the favorites state so the app wouldn't crash when trying to read them.
