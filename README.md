@@ -31,7 +31,7 @@ ____
 
 ## Tech Stack  
 
-- React (useState, useEffect)  
+- React (useState, useEffect, useRef)  
    I used it to manage application state and handle side effects like API calls  
 
 - OMDb API (external API)  
