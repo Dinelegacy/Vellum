@@ -12,7 +12,7 @@ ____
 - **Persistent Data:** Everything is saved to localStorage, so your watchlist stays there even if you close the browser.  
 ____
 
-## Tech I used
+## Tech used
 
 - **React:** Used `useState` for the movie data and `useEffect` to handle the API calls. I also used `useRef` to handle the smooth scrolling buttons in the hero section.  
 - **OMDb API:** This is where all the movie data (titles, posters, IDs) comes from.  
@@ -21,14 +21,14 @@ ____
 
 ## How to run it
 
-1. Clone the repo: `git clone https://github.com`  
+1. Clone the repo: `git clone https://github.com/Dinelegacy/Vellum.git`  
 2. Go into the folder: `cd Vellum/my-app`  
 3. Install everything: `npm install`  
 4. Run it: `npm start`  
-5. Check it out at [http://localhost:3000](http://localhost:3000)  
+5. Check it out at http://localhost:3000
 ____
 
-## Challenges I faced
+## Challenges faced
 
 - The biggest issue I had was with the movie posters. Some movies in the OMDb database don't have images (they return "N/A"), which broke my layout. I had to write a utility function to check for this and swap in a placeholder image so the cards didn't look empty.  
 - Another tricky part was normalizing the data. Because I'm allowing both API results and "custom" manual entries, the data objects looked different. I had to make sure they both used the same property names (like `title` and `poster`) before saving them to the favorites state so the app wouldn't crash when trying to read them.
