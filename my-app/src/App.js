@@ -17,6 +17,8 @@ function App() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
 
+  // REVIEW: JSON.parse will throw if localStorage data is corrupted.
+  // Wrap in try/catch to prevent the entire app from crashing on bad data.
   const [favorites, setFavorites] = useState(() => {
     const savedData = localStorage.getItem("my-watchlist");
     return savedData ? JSON.parse(savedData) : [];
@@ -36,6 +38,8 @@ function App() {
     localStorage.setItem("my-watchlist", JSON.stringify(favorites));
   }, [favorites]);
 
+  // REVIEW: No try/catch — if searchMovies throws, setLoading(false) never
+  // runs and the UI stays stuck on the loading spinner forever.
   const performSearch = async (term) => {
     const q = term.trim();
     if (!q) return;
@@ -47,7 +51,10 @@ function App() {
   };
 
   const scrollToWatchlist = () => {
-    watchlistRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    watchlistRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const scrollToAddMovie = () => {
@@ -55,15 +62,18 @@ function App() {
   };
 
   const handleDeleteMovie = (id) => {
-    setFavorites(favorites.filter((m) => (m.id !== id && m.imdbID !== id)));
+    setFavorites(favorites.filter((m) => m.id !== id && m.imdbID !== id));
     setSelectedMovie(null);
   };
 
   const handleUpdateMovie = (id, newTitle) => {
-    const update = (list) => list.map(m => (m.id === id || m.imdbID === id) ? { ...m, title: newTitle } : m);
+    const update = (list) =>
+      list.map((m) =>
+        m.id === id || m.imdbID === id ? { ...m, title: newTitle } : m,
+      );
     setFavorites(update);
     setMovies(update);
-    setSelectedMovie(prev => prev ? { ...prev, title: newTitle } : null);
+    setSelectedMovie((prev) => (prev ? { ...prev, title: newTitle } : null));
   };
   const handleAddToFavorites = async (movieInput) => {
     let movieToAdd;
@@ -77,7 +87,7 @@ function App() {
         movieToAdd = {
           id: `local-${Date.now()}`,
           title: movieInput,
-          poster: `https://placehold.co/300x450/181818/FFFFFF?text=${encodeURIComponent(movieInput)}`
+          poster: `https://placehold.co/300x450/181818/FFFFFF?text=${encodeURIComponent(movieInput)}`,
         };
       }
     } else {
@@ -85,7 +95,9 @@ function App() {
     }
 
     const isDuplicate = favorites.some(
-      (fav) => fav.id === movieToAdd.id || (movieToAdd.imdbID && fav.imdbID === movieToAdd.imdbID)
+      (fav) =>
+        fav.id === movieToAdd.id ||
+        (movieToAdd.imdbID && fav.imdbID === movieToAdd.imdbID),
     );
     if (isDuplicate) {
       return { ok: false, reason: "duplicate" };
@@ -95,7 +107,12 @@ function App() {
   };
   return (
     <div className="app-container">
+      {/* REVIEW: Missing aria-label on <nav> — screen readers will announce
+          this as an unlabelled navigation region. Add aria-label="Main navigation". */}
       <nav className="navbar">
+        {/* REVIEW: The logo is a plain <div>, not a link or heading.
+            It should be an <a href="/"> or <h1> so users can navigate home
+            and screen readers understand it as the site identity. */}
         <div className="logo">VELLUM</div>
         <div className="nav-actions">
           <div className="search-wrapper">
@@ -120,15 +137,29 @@ function App() {
       </nav>
 
       <div className="hero">
+        {/* REVIEW: Decorative-only element should have aria-hidden="true"
+            so screen readers skip it. */}
         <div className="hero-overlay"></div>
         <div className="hero-content">
           <h1>Unlimited movies, series and more</h1>
           <p>Your portal to world-class entertainment.</p>
           <div className="hero-btns">
-            <button type="button" className="btn-play" onClick={scrollToWatchlist}>
+            {/* REVIEW: The ▶ and ⓘ emoji characters are read aloud by screen
+                readers (e.g. "black right-pointing triangle My watchlist").
+                Wrap each emoji in <span aria-hidden="true"> to hide it,
+                or use a proper SVG icon with aria-hidden. */}
+            <button
+              type="button"
+              className="btn-play"
+              onClick={scrollToWatchlist}
+            >
               ▶ My watchlist
             </button>
-            <button type="button" className="btn-info" onClick={scrollToAddMovie}>
+            <button
+              type="button"
+              className="btn-info"
+              onClick={scrollToAddMovie}
+            >
               ⓘ Add a movie
             </button>
           </div>
@@ -140,21 +171,34 @@ function App() {
           <AddMovie onAdd={handleAddToFavorites} />
         </section>
 
-        <section className="row" ref={watchlistRef} aria-labelledby="watchlist-heading">
+        <section
+          className="row"
+          ref={watchlistRef}
+          aria-labelledby="watchlist-heading"
+        >
           <div className="cinematic-separator"></div>
           <h2 id="watchlist-heading">My Watchlist</h2>
           <Favorites favorites={favorites} onSelect={setSelectedMovie} />
         </section>
 
-        <section className="row trending-shelf" aria-labelledby="discovery-heading">
+        <section
+          className="row trending-shelf"
+          aria-labelledby="discovery-heading"
+        >
           <div className="cinematic-separator"></div>
-          <h2 id="discovery-heading">{hasSearched ? `Results for: ${searchTerm}` : "Trending Movies"}</h2>
+          <h2 id="discovery-heading">
+            {hasSearched ? `Results for: ${searchTerm}` : "Trending Movies"}
+          </h2>
           {loading ? (
             <div className="loader" role="status" aria-live="polite">
               Loading…
             </div>
           ) : movies.length > 0 ? (
-            <MovieList movies={movies} onSelect={setSelectedMovie} variant="row" />
+            <MovieList
+              movies={movies}
+              onSelect={setSelectedMovie}
+              variant="row"
+            />
           ) : (
             <p className="no-results" role="status">
               {hasSearched
